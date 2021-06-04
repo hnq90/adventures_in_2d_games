@@ -1,9 +1,10 @@
+import 'package:basic_flame_game/pub_nub_keys.dart' as pubnub_keys;
 import 'package:pubnub/pubnub.dart';
 
 class PubNubService {
   final pubnub = PubNub(
       defaultKeyset: Keyset(
-          subscribeKey: 'sub-c-a12a287e-c468-11eb-9e40-ea6857a81ff7',
-          publishKey: 'pub-c-5d34f973-30dc-4083-9714-52b067f7efd8',
+          subscribeKey: pubnub_keys.subscribe,
+          publishKey: pubnub_keys.publish,
           uuid: UUID('ReplaceWithYourClientIdentifier')));
 }
