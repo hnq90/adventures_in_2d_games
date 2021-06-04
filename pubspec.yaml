@@ -8,7 +8,12 @@ environment:
   sdk: ">=2.13.0 <3.0.0"
 
 dependencies:
+  a_star_algorithm: ^0.0.4
   flame: ^1.0.0-releasecandidate.11
+  pubnub:
+    git:
+      url: https://github.com/pubnub/dart
+      path: pubnub
   flutter:
     sdk: flutter
 

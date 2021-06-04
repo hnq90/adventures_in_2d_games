@@ -1,7 +1,22 @@
+import 'package:a_star_algorithm/a_star_algorithm.dart';
 import 'package:flame/game.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
+import 'package:pubnub/pubnub.dart';
+
+List<Offset> result = AStar(
+  rows: 20,
+  columns: 20,
+  start: Offset(5, 0),
+  end: Offset(8, 19),
+  barriers: [
+    Offset(10, 5),
+    Offset(10, 6),
+    Offset(10, 7),
+    Offset(10, 8),
+  ],
+).findThePath();
 
 enum Direction { up, down, left, right }
 
@@ -17,7 +32,15 @@ const Map<Direction, double> start = {
   Direction.right: 288
 };
 
-void main() => runApp(GameWidget(game: MyGame()));
+void main() {
+  var pubnub = PubNub(
+      defaultKeyset: Keyset(
+          subscribeKey: 'sub-c-a12a287e-c468-11eb-9e40-ea6857a81ff7',
+          publishKey: 'pub-c-5d34f973-30dc-4083-9714-52b067f7efd8',
+          uuid: UUID('ReplaceWithYourClientIdentifier')));
+
+  return runApp(GameWidget(game: MyGame()));
+}
 
 class MyGame extends Game with TapDetector {
   Map<Direction, SpriteAnimation> animationFor = {};
@@ -63,8 +86,6 @@ class MyGame extends Game with TapDetector {
 
   @override
   void render(Canvas canvas) {
-    // Since an animation is basically a list of sprites, to render it, we just need to get its
-    // current sprite and render it on our canvas. Which frame is the current sprite is updated on the `update` method.
     currentAnimation
         .getSprite()
         .render(canvas, position: baldPosition, size: baldSize);
