@@ -8,7 +8,21 @@
       "name": "basic_flame_game",
       "request": "launch",
       "type": "dart",
+    },
+    {
+      "name": "macos",
+      "request": "launch",
+      "type": "dart",
       "deviceId": "macos"
+    },
+    {
+      "name": "gitpod",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--web-hostname",
+        "any"
+      ]
     },
     {
       "name": "basic_flame_game (profile mode)",
