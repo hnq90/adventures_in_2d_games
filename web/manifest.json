@@ -1,6 +1,6 @@
 {
-    "name": "basic_flame_game",
-    "short_name": "basic_flame_game",
+    "name": "adventures_in_2d_games",
+    "short_name": "adventures_in_2d_games",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

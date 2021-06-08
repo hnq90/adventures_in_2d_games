@@ -1,4 +1,4 @@
-import 'package:basic_flame_game/pub_nub_keys.dart' as pubnub_keys;
+import 'package:adventures_in_2d_games/pub_nub_keys.dart' as pubnub_keys;
 import 'package:pubnub/pubnub.dart';
 
 class PubNubService {

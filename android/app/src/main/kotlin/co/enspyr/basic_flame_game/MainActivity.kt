@@ -1,4 +1,4 @@
-package co.enspyr.basic_flame_game
+package co.enspyr.adventures_in_2d_games
 
 import io.flutter.embedding.android.FlutterActivity
 

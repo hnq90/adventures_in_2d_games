@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "basic_flame_game",
+      "name": "adventures_in_2d_games",
       "request": "launch",
       "type": "dart",
     },
@@ -25,7 +25,7 @@
       ]
     },
     {
-      "name": "basic_flame_game (profile mode)",
+      "name": "adventures_in_2d_games (profile mode)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"

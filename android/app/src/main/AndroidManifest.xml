@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="co.enspyr.basic_flame_game">
+    package="co.enspyr.adventures_in_2d_games">
    <application
-        android:label="basic_flame_game"
+        android:label="adventures_in_2d_games"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

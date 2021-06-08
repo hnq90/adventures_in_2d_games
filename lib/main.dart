@@ -1,4 +1,4 @@
-import 'package:basic_flame_game/character.dart';
+import 'package:adventures_in_2d_games/character.dart';
 import 'package:flame/game.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/keyboard.dart';

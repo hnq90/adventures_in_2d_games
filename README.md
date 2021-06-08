@@ -1,4 +1,4 @@
-# basic_flame_game
+# adventures_in_2d_games
 
 A new Flutter project.
 
