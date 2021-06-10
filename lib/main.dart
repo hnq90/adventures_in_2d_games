@@ -59,7 +59,12 @@ class MyGame extends Game with KeyboardEvents, TapDetector {
 
   @override
   void render(Canvas canvas) {
+    for (double i = 0; i <= 1280; i += 64) {
+      canvas.drawLine(Offset(0, i), Offset(1720, i), _linePaint);
+    }
+    for (double i = 0; i <= 1280; i += 64) {
+      canvas.drawLine(Offset(i, 0), Offset(i, 1720), _linePaint);
+    }
     character.render(canvas);
-    canvas.drawLine(Offset(0, 0), Offset(64, 0), _linePaint);
   }
 }
