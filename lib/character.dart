@@ -10,8 +10,7 @@ typedef Position = Vector2;
 
 class Character extends SpriteAnimationGroupComponent<Direction> {
   // Private constructor - the async create method is how an object is created.
-  Character._(Map<Direction, SpriteAnimation> animations,
-      {required Position start})
+  Character._(Map<Direction, SpriteAnimation> animations, Position start)
       : super(
             size: Vector2(64, 64),
             position: start,
@@ -19,7 +18,8 @@ class Character extends SpriteAnimationGroupComponent<Direction> {
             current: Direction.down);
 
   // Static async create method so we can load sprite animations.
-  static Future<Character> create(String path) async {
+  static Future<Character> create(String path,
+      {required Position start}) async {
     final animations = <Direction, SpriteAnimation>{};
 
     // The x position of each sprite in the sprite sheet.
@@ -35,14 +35,14 @@ class Character extends SpriteAnimationGroupComponent<Direction> {
               texturePosition: Vector2(spriteX[direction.index], 0)));
     }
 
-    return Character._(animations, start: Position(240, 50));
+    return Character._(animations, start);
   }
 
   void changeDirection(RawKeyEvent event) {
     if (event is RawKeyDownEvent) {
       current = Input.directionFrom(event);
-      final newPoint = position + current.vector;
-      addEffect(MoveEffect(path: [newPoint], speed: 200.0));
+      addEffect(
+          MoveEffect(path: [current.vector], speed: 200.0, isRelative: true));
     }
   }
 
