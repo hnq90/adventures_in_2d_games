@@ -1,5 +1,5 @@
 name: adventures_in_2d_games
-description: A new Flutter project.
+description: Using Flame to replicate gather.town (the 2d game part).
 publish_to: 'none'
 
 version: 1.0.0+1

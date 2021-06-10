@@ -1,16 +1,5 @@
 # adventures_in_2d_games
 
-A new Flutter project.
+Using Flame to replicate gather.town (the 2d game part).
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[Notes](https://docs.google.com/document/d/1AwRDvMCzAEA6qj_e5RqV7b5Vqtdi819tkqowBr8jGHs/edit?usp=sharing)
