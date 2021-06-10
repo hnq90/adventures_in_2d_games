@@ -1,4 +1,7 @@
+import 'package:a_star_algorithm/a_star_algorithm.dart';
 import 'package:adventures_in_2d_games/character.dart';
+import 'package:adventures_in_2d_games/extensions/offset_extension.dart';
+import 'package:adventures_in_2d_games/extensions/vector2_extension.dart';
 import 'package:flame/game.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/keyboard.dart';
@@ -12,9 +15,16 @@ extension RawKeyEventExtension on RawKeyEvent {
 
 void main() => runApp(GameWidget(game: MyGame()));
 
-late Character character;
-bool paused = false;
-var clickedSquare = Vector2(0, 0);
+late Character _character;
+bool _paused = false;
+var _clickedSquare = Vector2(0, 0);
+List<Offset> _pathSquares = [];
+List<Offset> _barriers = [
+  Offset(5, 5),
+  Offset(5, 6),
+  Offset(5, 7),
+  Offset(5, 8)
+];
 
 final _linePaint = Paint()
   ..color = Colors.blue
@@ -25,7 +35,7 @@ class MyGame extends Game with KeyboardEvents, TapDetector {
   @override
   Future<void> onLoad() async {
     RawKeyboard.instance.keyEventHandler = (event) => true;
-    character = await Character.create('bald.png', start: Position(0, 0));
+    _character = await Character.create('bald.png', start: Position(0, 0));
   }
 
   @override
@@ -35,15 +45,15 @@ class MyGame extends Game with KeyboardEvents, TapDetector {
     if (keyEvent.isSpaceDown) return _togglePausedState();
 
     // otherwise we change the direction of movement
-    character.changeDirection(keyEvent);
+    _character.changeDirection(keyEvent);
   }
 
   void _togglePausedState() {
-    if (paused) {
-      paused = false;
+    if (_paused) {
+      _paused = false;
       resumeEngine();
     } else {
-      paused = true;
+      _paused = true;
       pauseEngine();
     }
     return;
@@ -53,16 +63,22 @@ class MyGame extends Game with KeyboardEvents, TapDetector {
   void onTapDown(TapDownInfo event) {
     super.onTapDown(event);
     final point = event.eventPosition.game.toOffset();
-    print('${(point.dx / 64).floor()}, ${(point.dy / 64).floor()}');
-    clickedSquare = Vector2(
-        (point.dx / 64).floor().toDouble(), (point.dy / 64).floor().toDouble());
+    _clickedSquare = point.toSquare();
+
+    _pathSquares = AStar(
+      rows: 10,
+      columns: 10,
+      start: _character.position.toSquare().toOffset(),
+      end: _clickedSquare.toOffset(),
+      barriers: _barriers,
+    ).findThePath();
   }
 
   @override
   Color backgroundColor() => const Color(0xFF222222);
 
   @override
-  void update(double dt) => character.update(dt);
+  void update(double dt) => _character.update(dt);
 
   @override
   void render(Canvas canvas) {
@@ -74,13 +90,19 @@ class MyGame extends Game with KeyboardEvents, TapDetector {
       canvas.drawLine(Offset(i, 0), Offset(i, 1720), _linePaint);
     }
 
+    for (final barrier in _barriers) {
+      canvas.drawRect(barrier.toRect64(), Paint()..color = Colors.red);
+    }
+
+    for (final square in _pathSquares) {
+      canvas.drawRect(square.toRect64(), Paint()..color = Colors.blue);
+    }
+
     // Draw the selected square.
     canvas.drawRect(
-        Rect.fromPoints((clickedSquare * 64).toOffset(),
-            ((clickedSquare + Vector2(1, 1)) * 64).toOffset()),
-        Paint()..color = Colors.lightGreen);
+        _clickedSquare.toRect64(), Paint()..color = Colors.lightGreen);
 
     // Draw our character
-    character.render(canvas);
+    _character.render(canvas);
   }
 }
