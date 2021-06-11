@@ -47,3 +47,5 @@ app.*.map.json
 
 # pubnub config 
 lib/pub_nub_keys.dart
+# firebase config
+macos/Runner/GoogleService-Info.plist

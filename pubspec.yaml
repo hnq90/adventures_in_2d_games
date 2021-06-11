@@ -8,18 +8,31 @@ environment:
   sdk: ">=2.13.0 <3.0.0"
 
 dependencies:
+  flutter:
+    sdk: flutter
+  
   a_star_algorithm: ^0.0.4
   flame: ^1.0.0-releasecandidate.11
   pubnub:
     git:
       url: https://github.com/pubnub/dart
       path: pubnub
-  flutter:
-    sdk: flutter
+  
+  freezed_annotation:
+  json_annotation:
+  redfire:
+    # git: https://github.com/enspyrco/redfire.git
+    path: /Users/nick/git/orgs/enspyrco/redfire
+  flutter_redux:
+  fast_immutable_collections:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  build_runner:
+  freezed:
+  json_serializable:
 
 flutter:
   assets:
