@@ -2,6 +2,8 @@ import 'package:a_star_algorithm/a_star_algorithm.dart';
 import 'package:adventures_in_2d_games/character.dart';
 import 'package:adventures_in_2d_games/extensions/offset_extension.dart';
 import 'package:adventures_in_2d_games/extensions/vector2_extension.dart';
+import 'package:flame/effects.dart';
+import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
 import 'package:flame/gestures.dart';
 import 'package:flame/keyboard.dart';
@@ -16,6 +18,7 @@ extension RawKeyEventExtension on RawKeyEvent {
 void main() => runApp(GameWidget(game: MyGame()));
 
 late Character _character;
+MoveEffect? _effect;
 bool _paused = false;
 var _clickedSquare = Vector2(0, 0);
 List<Offset> _pathSquares = [];
@@ -88,6 +91,20 @@ class MyGame extends Game with KeyboardEvents, TapDetector {
       end: _clickedSquare.toOffset(),
       barriers: _barriers,
     ).findThePath();
+
+    if (_effect != null) _character.removeEffect(_effect!);
+
+    _effect = MoveEffect(
+        speed: 300,
+        isRelative: false,
+        isAlternating: false,
+        path: (_pathSquares..insert(0, _clickedSquare.toOffset()))
+            .map((offset) => (offset).toVector2() * 64)
+            .toList()
+            .reversed
+            .toList());
+
+    _character.addEffect(_effect!);
   }
 
   @override
