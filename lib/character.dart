@@ -1,10 +1,8 @@
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
-import 'package:flutter/services.dart';
 
 import 'enums/direction.dart';
-import 'input.dart';
 
 typedef Position = Vector2;
 
@@ -38,13 +36,13 @@ class Character extends SpriteAnimationGroupComponent<Direction> {
     return Character._(animations, start);
   }
 
-  void changeDirection(RawKeyEvent event) {
-    if (event is RawKeyDownEvent) {
-      current = Input.directionFrom(event);
-      addEffect(
-          MoveEffect(path: [current.vector], speed: 200.0, isRelative: true));
-    }
-  }
+  // void changeDirection(RawKeyEvent event) {
+  //   if (event is RawKeyDownEvent) {
+  //     current = Input.directionFrom(event);
+  //     addEffect(
+  //         MoveEffect(path: [current.vector], speed: 200.0, isRelative: true));
+  //   }
+  // }
 
   void update(double dt) => super.update(dt);
   void render(Canvas canvas) => super.render(canvas);

@@ -9,12 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'character.dart';
+import 'effects/sprite_move_effect.dart';
 import 'extensions/offset_extension.dart';
 import 'extensions/raw_key_event_extension.dart';
 import 'extensions/vector2_extension.dart';
 
 late Character _character;
-MoveEffect? _effect;
+SpriteDirectionEffect? _directionEffect;
+MoveEffect? _moveEffect;
 bool _paused = false;
 var _clickedSquare = Vector2(0, 0);
 List<Offset> _pathSquares = [];
@@ -60,7 +62,7 @@ class AdventuresIn2dGame extends Game with KeyboardEvents, TapDetector {
     if (keyEvent.isSpaceDown) return _togglePausedState();
 
     // otherwise we change the direction of movement
-    _character.changeDirection(keyEvent);
+    // _character.changeDirection(keyEvent);
   }
 
   void _togglePausedState() {
@@ -88,19 +90,22 @@ class AdventuresIn2dGame extends Game with KeyboardEvents, TapDetector {
       barriers: _barriers,
     ).findThePath();
 
-    if (_effect != null) _character.removeEffect(_effect!);
+    if (_directionEffect != null) _character.removeEffect(_directionEffect!);
+    if (_moveEffect != null) _character.removeEffect(_moveEffect!);
 
-    _effect = MoveEffect(
-        speed: 300,
-        isRelative: false,
-        isAlternating: false,
-        path: (_pathSquares..insert(0, _clickedSquare.toOffset()))
-            .map((offset) => (offset).toVector2() * 64)
-            .toList()
-            .reversed
-            .toList());
+    // add the square that was clicked to the path and reverse the order
+    final reversedPath = (_pathSquares..insert(0, _clickedSquare.toOffset()))
+        .map((offset) => (offset).toVector2() * 64)
+        .toList()
+        .reversed
+        .toList();
 
-    _character.addEffect(_effect!);
+    _directionEffect =
+        SpriteDirectionEffect(speed: 300, pathPoints: reversedPath);
+    _moveEffect = MoveEffect(speed: 300, path: reversedPath);
+
+    _character.addEffect(_directionEffect!);
+    _character.addEffect(_moveEffect!);
   }
 
   @override

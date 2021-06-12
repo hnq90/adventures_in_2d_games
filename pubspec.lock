@@ -98,7 +98,7 @@ packages:
       name: built_collection
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.0"
+    version: "5.1.0"
   built_value:
     dependency: transitive
     description:
@@ -518,9 +518,11 @@ packages:
   redfire:
     dependency: "direct main"
     description:
-      path: "/Users/nick/git/orgs/enspyrco/redfire"
-      relative: false
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "402b382d7e5e564b9ce2ee1f04fa1a3c1dc5fd75"
+      url: "https://github.com/enspyrco/redfire.git"
+    source: git
     version: "0.0.1"
   redux:
     dependency: transitive
