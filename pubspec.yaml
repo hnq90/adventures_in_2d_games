@@ -13,10 +13,6 @@ dependencies:
   
   a_star_algorithm: ^0.0.4
   flame: ^1.0.0-releasecandidate.11
-  pubnub:
-    git:
-      url: https://github.com/pubnub/dart
-      path: pubnub
   
   freezed_annotation:
   json_annotation:

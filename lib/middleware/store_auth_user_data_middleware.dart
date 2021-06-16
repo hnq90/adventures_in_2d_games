@@ -12,9 +12,8 @@ class StoreAuthUserDataMiddleware
 
           if (action.authUserData == null) return;
 
-          final service = MultiplayerService(action.authUserData!.uid);
-          final readyState = await service.setupWebSocket();
-          print('readyState=$readyState');
+          final service =
+              await MultiplayerService.create(action.authUserData!.uid);
           MultiplayerLocator.provide(service);
         });
 }
