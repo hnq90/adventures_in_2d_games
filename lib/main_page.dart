@@ -1,5 +1,5 @@
 import 'package:a_star_algorithm/a_star_algorithm.dart';
-import 'package:adventures_in_2d_games/character.dart';
+import 'package:adventures_in_2d_games/services/locator.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';
@@ -8,40 +8,21 @@ import 'package:flame/keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'character.dart';
 import 'effects/sprite_move_effect.dart';
 import 'extensions/offset_extension.dart';
 import 'extensions/raw_key_event_extension.dart';
 import 'extensions/vector2_extension.dart';
+import 'models/domain/barriers.dart';
+import 'models/domain/character.dart';
 
 late Character _character;
 SpriteDirectionEffect? _directionEffect;
 MoveEffect? _moveEffect;
 bool _paused = false;
-var _clickedSquare = Vector2(0, 0);
-List<Offset> _pathSquares = [];
-List<Offset> _barriers = [
-  Offset(5, 2),
-  Offset(5, 3),
-  Offset(5, 4),
-  Offset(5, 5),
-  Offset(5, 6),
-  Offset(5, 7),
-  Offset(5, 8),
-  Offset(5, 9),
-  Offset(7, 7),
-  Offset(7, 8),
-  Offset(6, 8),
-  Offset(1, 0),
-  Offset(1, 1),
-  Offset(1, 2),
-  Offset(1, 3),
-  Offset(1, 4),
-  Offset(1, 5),
-  Offset(1, 6),
-  Offset(1, 7),
-  Offset(1, 8),
-];
+var _clickedUnit = Vector2(0, 0);
+List<Offset> _pathUnits = [];
+
+int departureTime = 0;
 
 final _linePaint = Paint()
   ..color = Colors.blue
@@ -80,29 +61,30 @@ class AdventuresIn2dGame extends Game with KeyboardEvents, TapDetector {
   void onTapDown(TapDownInfo event) {
     super.onTapDown(event);
     final point = event.eventPosition.game.toOffset();
-    _clickedSquare = point.toSquare();
+    _clickedUnit = point.toUnit();
 
-    _pathSquares = AStar(
+    _pathUnits = AStar(
       rows: 10,
       columns: 10,
-      start: _character.position.toSquare().toOffset(),
-      end: _clickedSquare.toOffset(),
-      barriers: _barriers,
-    ).findThePath();
+      start: _clickedUnit.toOffset(),
+      end: _character.position.toUnit().toOffset(),
+      barriers: barriers,
+    ).findThePath()
+      ..add(_clickedUnit.toOffset());
+
+    final pathVectors =
+        _pathUnits.map((offset) => (offset).toVector2() * 64).toList();
+
+    final multiplayerService = MultiplayerLocator.getService();
+    departureTime = DateTime.now().millisecondsSinceEpoch;
+    multiplayerService.publishPath(_pathUnits);
 
     if (_directionEffect != null) _character.removeEffect(_directionEffect!);
     if (_moveEffect != null) _character.removeEffect(_moveEffect!);
 
-    // add the square that was clicked to the path and reverse the order
-    final reversedPath = (_pathSquares..insert(0, _clickedSquare.toOffset()))
-        .map((offset) => (offset).toVector2() * 64)
-        .toList()
-        .reversed
-        .toList();
-
     _directionEffect =
-        SpriteDirectionEffect(speed: 300, pathPoints: reversedPath);
-    _moveEffect = MoveEffect(speed: 300, path: reversedPath);
+        SpriteDirectionEffect(speed: 300, pathPoints: pathVectors);
+    _moveEffect = MoveEffect(speed: 300, path: pathVectors);
 
     _character.addEffect(_directionEffect!);
     _character.addEffect(_moveEffect!);
@@ -124,17 +106,17 @@ class AdventuresIn2dGame extends Game with KeyboardEvents, TapDetector {
       canvas.drawLine(Offset(i, 0), Offset(i, 640), _linePaint);
     }
 
-    for (final barrier in _barriers) {
+    for (final barrier in barriers) {
       canvas.drawRect(barrier.toRect64(), Paint()..color = Colors.red);
     }
 
-    for (final square in _pathSquares) {
-      canvas.drawRect(square.toRect64(), Paint()..color = Colors.blue);
+    for (final pathUnit in _pathUnits) {
+      canvas.drawRect(pathUnit.toRect64(), Paint()..color = Colors.blue);
     }
 
     // Draw the selected square.
     canvas.drawRect(
-        _clickedSquare.toRect64(), Paint()..color = Colors.lightGreen);
+        _clickedUnit.toRect64(), Paint()..color = Colors.lightGreen);
 
     // Draw our character
     _character.render(canvas);

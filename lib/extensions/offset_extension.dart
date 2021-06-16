@@ -1,7 +1,7 @@
 import 'package:flame/extensions.dart';
 
 extension OffsetExtension on Offset {
-  Vector2 toSquare() {
+  Vector2 toUnit() {
     final o = this / 64;
     return Vector2(o.dx.floorToDouble(), o.dy.floorToDouble());
   }

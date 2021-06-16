@@ -1,8 +1,7 @@
+import 'package:adventures_in_2d_games/enums/direction.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
 import 'package:flame/extensions.dart';
-
-import 'enums/direction.dart';
 
 typedef Position = Vector2;
 
