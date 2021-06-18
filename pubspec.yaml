@@ -11,17 +11,17 @@ dependencies:
   flutter:
     sdk: flutter
   
-  a_star_algorithm: ^0.0.4
-  flame: ^1.0.0-releasecandidate.11
+  a_star_algorithm:
+  flame: ^1.0.0-releasecandidate.12
   
   freezed_annotation:
   json_annotation:
   redfire:
     git: https://github.com/enspyrco/redfire.git
     # path: /Users/nick/git/orgs/enspyrco/redfire
+  web_socket_channel:
   flutter_redux:
   fast_immutable_collections:
-  web_socket_channel: ^2.1.0
 
 dev_dependencies:
   flutter_test:

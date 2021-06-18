@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "adventures_in_2d_games",
+      "name": "system_device",
       "request": "launch",
       "type": "dart",
     },
@@ -32,7 +32,7 @@
       ]
     },
     {
-      "name": "adventures_in_2d_games (profile mode)",
+      "name": "profile_mode",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile"
