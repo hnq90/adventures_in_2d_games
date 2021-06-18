@@ -1,38 +1,30 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:adventures_in_2d_games/models/networking/movement_path.dart';
 import 'package:adventures_in_2d_games/utilities/constants.dart';
 import 'package:flame/extensions.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../extensions/offsets_list_extension.dart';
 
 class MultiplayerService {
-  MultiplayerService._(String userId, WebSocket websocket)
-      : _userId = userId,
-        _webSocket = websocket {
+  MultiplayerService(String userId) : _userId = userId {
     // listen to the websocket and react to path data
-    _subscription = _webSocket.listen((data) {
-      print('ws: ${DateTime.now().millisecondsSinceEpoch - _departureTime}');
+    _webSocket = WebSocketChannel.connect(Uri.parse(us_central1));
+    _subscription = _webSocket.stream.listen((data) {
       final pathData = MovementPath.fromJson(jsonDecode(data));
       if (pathData.userId == _userId) {
+        print('ws: ${DateTime.now().millisecondsSinceEpoch - _departureTime}');
         print('Received data: $data');
-        print(DateTime.now().millisecondsSinceEpoch - _departureTime);
       }
     }, onError: _error, onDone: _done);
   }
 
   final String _userId;
-  late final WebSocket _webSocket;
+  late final WebSocketChannel _webSocket;
   late final StreamSubscription _subscription;
   int _departureTime = 0;
-
-  static Future<MultiplayerService> create(String userId) async {
-    // ignore: close_sinks
-    final websocket = await WebSocket.connect(australia_southeast1);
-    return MultiplayerService._(userId, websocket);
-  }
 
   publishPath(List<Offset> pathUnits) {
     final movementPath =
@@ -40,29 +32,16 @@ class MultiplayerService {
 
     // record time and send data via websocket
     _departureTime = DateTime.now().millisecondsSinceEpoch;
-    _webSocket.add(jsonEncode(movementPath.toJson()));
+    _webSocket.sink.add(jsonEncode(movementPath.toJson()));
   }
 
-  _error(err) async {
-    print(new DateTime.now().toString() + " CONNECTION ERROR: $err");
-  }
+  _error(err) => print('${DateTime.now()} > CONNECTION ERROR: $err');
 
-  _done() async {
-    print(new DateTime.now().toString() +
-        " CONNECTION DONE! \n" +
-        "readyState=" +
-        _webSocket.readyState.toString() +
-        "\n" +
-        "closeCode=" +
-        _webSocket.closeCode.toString() +
-        "\n" +
-        "closeReason=" +
-        _webSocket.closeReason.toString() +
-        "\n");
-  }
+  _done() =>
+      '${DateTime.now()} > CONNECTION DONE! closeCode=${_webSocket.closeCode}, closeReason= ${_webSocket.closeReason}';
 
   Future<dynamic> close() async {
     await _subscription.cancel();
-    return _webSocket.close();
+    return _webSocket.sink.close();
   }
 }

@@ -52,3 +52,6 @@ macos/Runner/GoogleService-Info.plist
 # generated files
 **.freezed.dart
 **.g.dart
+
+# contains firebase config info including APIKey
+web/index.html

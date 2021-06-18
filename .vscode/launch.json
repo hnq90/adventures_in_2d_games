@@ -16,6 +16,13 @@
       "deviceId": "macos"
     },
     {
+      "name": "web",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "chrome",
+      "args": ["--web-hostname", "localhost", "--web-port", "5000"]
+    },
+    {
       "name": "gitpod",
       "request": "launch",
       "type": "dart",

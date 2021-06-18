@@ -12,8 +12,7 @@ class StoreAuthUserDataMiddleware
 
           if (action.authUserData == null) return;
 
-          final service =
-              await MultiplayerService.create(action.authUserData!.uid);
+          final service = MultiplayerService(action.authUserData!.uid);
           MultiplayerLocator.provide(service);
         });
 }
