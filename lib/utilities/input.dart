@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 
-import 'enums/direction.dart';
+import '../enums/direction.dart';
 
 Map<int, Direction> directionFor = {
   68719477508: Direction.up,

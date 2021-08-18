@@ -1,8 +1,9 @@
-import 'package:adventures_in_2d_games/services/locator.dart';
-import 'package:adventures_in_2d_games/services/multiplayer_service.dart';
-import 'package:adventures_in_2d_games/state/app_state.dart';
-import 'package:redfire/actions/store_auth_user_data_action.dart';
+import 'package:redfire/actions.dart';
 import 'package:redux/redux.dart';
+
+import '../../redux/state/app/app_state.dart';
+import '../../services/locator.dart';
+import '../../services/multiplayer_service.dart';
 
 class StoreAuthUserDataMiddleware
     extends TypedMiddleware<AppState, StoreAuthUserDataAction> {
@@ -12,7 +13,7 @@ class StoreAuthUserDataMiddleware
 
           if (action.authUserData == null) return;
 
-          final service = MultiplayerService(action.authUserData!.uid);
+          final service = MultiplayerService(action.authUserData!.uid, store);
           MultiplayerLocator.provide(service);
         });
 }

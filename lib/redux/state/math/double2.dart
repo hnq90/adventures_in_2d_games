@@ -6,4 +6,7 @@ class Double2 {
   Map<String, dynamic> toJson() => {'x': x, 'y': y};
   factory Double2.fromJson(Map<String, dynamic> json) =>
       Double2(json['x'] as double, json['y'] as double);
+
+  @override
+  String toString() => '{x: $x, y: $y}';
 }

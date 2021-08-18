@@ -1,5 +1,6 @@
-import 'package:adventures_in_2d_games/utilities/double2.dart';
 import 'package:flutter/widgets.dart';
+
+import '../redux/state/math/double2.dart';
 
 extension OffsetsListExtension on List<Offset> {
   List<Double2> toValues() =>

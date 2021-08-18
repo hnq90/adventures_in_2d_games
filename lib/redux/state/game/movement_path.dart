@@ -1,5 +1,6 @@
-import 'package:adventures_in_2d_games/utilities/double2.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import '../../../redux/state/math/double2.dart';
 
 part 'movement_path.freezed.dart';
 part 'movement_path.g.dart';

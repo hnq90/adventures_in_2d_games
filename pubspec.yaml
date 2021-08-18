@@ -21,6 +21,7 @@ dependencies:
   redfire:
     git: https://github.com/enspyrco/redfire.git
     # path: /Users/nick/git/orgs/enspyrco/redfire
+  redux:
   web_socket_channel:
   flutter_redux:
   fast_immutable_collections:

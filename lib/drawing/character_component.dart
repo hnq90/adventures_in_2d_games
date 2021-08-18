@@ -1,3 +1,4 @@
+import 'package:adventures_in_2d_games/effects/sprite_move_effect.dart';
 import 'package:adventures_in_2d_games/enums/direction.dart';
 import 'package:flame/components.dart';
 import 'package:flame/effects.dart';
@@ -5,17 +6,21 @@ import 'package:flame/extensions.dart';
 
 typedef Position = Vector2;
 
-class Character extends SpriteAnimationGroupComponent<Direction> {
+class CharacterComponent extends SpriteAnimationGroupComponent<Direction> {
   // Private constructor - the async create method is how an object is created.
-  Character._(Map<Direction, SpriteAnimation> animations, Position start)
+  CharacterComponent._(
+      Map<Direction, SpriteAnimation> animations, Position start)
       : super(
             size: Vector2(64, 64),
             position: start,
             animations: animations,
             current: Direction.down);
 
+  SpriteDirectionEffect? _directionEffect;
+  MoveEffect? _moveEffect;
+
   // Static async create method so we can load sprite animations.
-  static Future<Character> create(String path,
+  static Future<CharacterComponent> create(String path,
       {required Position start}) async {
     final animations = <Direction, SpriteAnimation>{};
 
@@ -32,7 +37,7 @@ class Character extends SpriteAnimationGroupComponent<Direction> {
               texturePosition: Vector2(spriteX[direction.index], 0)));
     }
 
-    return Character._(animations, start);
+    return CharacterComponent._(animations, start);
   }
 
   // void changeDirection(RawKeyEvent event) {
@@ -42,6 +47,17 @@ class Character extends SpriteAnimationGroupComponent<Direction> {
   //         MoveEffect(path: [current.vector], speed: 200.0, isRelative: true));
   //   }
   // }
+
+  void move({required double speed, required List<Vector2> points}) {
+    if (_directionEffect != null) removeEffect(_directionEffect!);
+    if (_moveEffect != null) removeEffect(_moveEffect!);
+
+    _directionEffect = SpriteDirectionEffect(speed: speed, pathPoints: points);
+    _moveEffect = MoveEffect(speed: speed, path: points);
+
+    addEffect(_directionEffect!);
+    addEffect(_moveEffect!);
+  }
 
   void update(double dt) => super.update(dt);
   void render(Canvas canvas) => super.render(canvas);

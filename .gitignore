@@ -45,8 +45,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# pubnub config 
-lib/pub_nub_keys.dart
 # firebase config
 macos/Runner/GoogleService-Info.plist
 # generated files

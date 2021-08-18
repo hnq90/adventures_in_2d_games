@@ -8,32 +8,40 @@ import 'package:flame/keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'effects/sprite_move_effect.dart';
+import 'drawing/character_component.dart';
+import 'drawing/map_components.dart';
 import 'extensions/offset_extension.dart';
 import 'extensions/raw_key_event_extension.dart';
 import 'extensions/vector2_extension.dart';
-import 'models/domain/barriers.dart';
-import 'models/domain/character.dart';
+import 'redux/state/game/game_state.dart';
 
-late Character _character;
-SpriteDirectionEffect? _directionEffect;
-MoveEffect? _moveEffect;
+CharacterComponent? _character;
+Map<String, CharacterComponent> _players = {};
 bool _paused = false;
 var _clickedUnit = Vector2(0, 0);
 List<Offset> _pathUnits = [];
 
 int departureTime = 0;
 
-final _linePaint = Paint()
-  ..color = Colors.blue
-  ..strokeWidth = 3
-  ..strokeCap = StrokeCap.round;
-
 class AdventuresIn2dGame extends Game with KeyboardEvents, TapDetector {
+  AdventuresIn2dGame(this._gameState);
+
+  final GameState _gameState;
+  final MapComponents _mapComponents = MapComponents();
+
   @override
   Future<void> onLoad() async {
-    RawKeyboard.instance.keyEventHandler = (event) => true;
-    _character = await Character.create('bald.png', start: Position(0, 0));
+    // Create a character at the origin if none exists.
+    _character ??=
+        await CharacterComponent.create('bald.png', start: Position(0, 0));
+
+    // Add a player for any new character that came through in the game state.
+    for (final playerId in _gameState.presentIds) {
+      if (!_players.containsKey(playerId)) {
+        _players[playerId] =
+            await CharacterComponent.create('bald.png', start: Position(9, 9));
+      }
+    }
   }
 
   @override
@@ -46,20 +54,14 @@ class AdventuresIn2dGame extends Game with KeyboardEvents, TapDetector {
     // _character.changeDirection(keyEvent);
   }
 
-  void _togglePausedState() {
-    if (_paused) {
-      _paused = false;
-      resumeEngine();
-    } else {
-      _paused = true;
-      pauseEngine();
-    }
-    return;
-  }
+  _togglePausedState() => (_paused = !_paused) ? pauseEngine() : resumeEngine();
 
   @override
   void onTapDown(TapDownInfo event) {
     super.onTapDown(event);
+
+    if (_character == null) return;
+
     final point = event.eventPosition.game.toOffset();
     _clickedUnit = point.toUnit();
 
@@ -67,8 +69,8 @@ class AdventuresIn2dGame extends Game with KeyboardEvents, TapDetector {
       rows: 10,
       columns: 10,
       start: _clickedUnit.toOffset(),
-      end: _character.position.toUnit().toOffset(),
-      barriers: barriers,
+      end: _character!.position.inUnits.toOffset(),
+      barriers: _mapComponents.barrierOffsets,
     ).findThePath()
       ..add(_clickedUnit.toOffset());
 
@@ -79,36 +81,24 @@ class AdventuresIn2dGame extends Game with KeyboardEvents, TapDetector {
     departureTime = DateTime.now().millisecondsSinceEpoch;
     multiplayerService.publishPath(_pathUnits);
 
-    if (_directionEffect != null) _character.removeEffect(_directionEffect!);
-    if (_moveEffect != null) _character.removeEffect(_moveEffect!);
-
-    _directionEffect =
-        SpriteDirectionEffect(speed: 300, pathPoints: pathVectors);
-    _moveEffect = MoveEffect(speed: 300, path: pathVectors);
-
-    _character.addEffect(_directionEffect!);
-    _character.addEffect(_moveEffect!);
+    _character!.move(speed: 300, points: pathVectors);
   }
 
   @override
   Color backgroundColor() => const Color(0xFF222222);
 
   @override
-  void update(double dt) => _character.update(dt);
+  void update(double dt) {
+    _character?.update(dt);
+    for (final player in _players.values) {
+      player.update(dt);
+    }
+  }
 
   @override
   void render(Canvas canvas) {
     // Draw the grid.
-    for (double i = 0; i <= 640; i += 64) {
-      canvas.drawLine(Offset(0, i), Offset(640, i), _linePaint);
-    }
-    for (double i = 0; i <= 640; i += 64) {
-      canvas.drawLine(Offset(i, 0), Offset(i, 640), _linePaint);
-    }
-
-    for (final barrier in barriers) {
-      canvas.drawRect(barrier.toRect64(), Paint()..color = Colors.red);
-    }
+    _mapComponents.render(canvas);
 
     for (final pathUnit in _pathUnits) {
       canvas.drawRect(pathUnit.toRect64(), Paint()..color = Colors.blue);
@@ -119,6 +109,10 @@ class AdventuresIn2dGame extends Game with KeyboardEvents, TapDetector {
         _clickedUnit.toRect64(), Paint()..color = Colors.lightGreen);
 
     // Draw our character
-    _character.render(canvas);
+    _character?.render(canvas);
+
+    for (final player in _players.values) {
+      player.render(canvas);
+    }
   }
 }

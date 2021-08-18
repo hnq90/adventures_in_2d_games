@@ -3,4 +3,15 @@
 	"dart.flutterRunLogFile": "/workspace/gitpod-flutter-web/logs/flutter_run.txt",
 	"dart.vmServiceLogFile": "/workspace/gitpod-flutter-web/logs/observatory.txt",
 	"dart.extensionLogFile": "/workspace/gitpod-flutter-web/logs/extension.txt",
+	"files.exclude": {
+    // "**/*.g.dart": true,
+    // "**/*.freezed.dart": true,
+		".firebaserc": true,
+    ".flutter-plugins": true,
+    ".flutter-plugins-dependencies": true,
+    ".metadata": true,
+    ".packages": true,
+		"build": true,
+    "lib/generated_plugin_registrant.dart": true,
+  }
 }
